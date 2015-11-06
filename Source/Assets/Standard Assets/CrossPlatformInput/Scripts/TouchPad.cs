@@ -134,6 +134,7 @@ namespace UnityStandardAssets.CrossPlatformInput
 #endif
 				UpdateVirtualAxes(new Vector3(pointerDelta.x, pointerDelta.y, 0));
 			}
+
 		}
 
 
