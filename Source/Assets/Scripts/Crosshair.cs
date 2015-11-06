@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityStandardAssets.CrossPlatformInput;
 
 public class Crosshair : MonoBehaviour {
     public Image m_crosshair;
@@ -8,6 +9,7 @@ public class Crosshair : MonoBehaviour {
     public Color m_lockedOnColor;
     private Color m_originalColor;
     private Vector2 m_halfScreen;
+    private GameObject m_targettedObject;
 	// Use this for initialization
 	void Start () {
         m_startPosition = m_crosshair.rectTransform.transform.position;
@@ -17,6 +19,7 @@ public class Crosshair : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        m_targettedObject = null;
         RaycastHit hit;
         bool hitEnemy = false;
         if (Physics.SphereCast(Camera.main.ScreenPointToRay(m_halfScreen).origin, 
@@ -29,6 +32,7 @@ public class Crosshair : MonoBehaviour {
                 m_crosshair.rectTransform.position = Vector3.MoveTowards(m_crosshair.rectTransform.position, Camera.main.WorldToScreenPoint(hit.rigidbody.transform.position), 10);
                 SetColour(m_lockedOnColor);
                 hitEnemy = true;
+                m_targettedObject = hit.rigidbody.gameObject;
             }
         }
         if(!hitEnemy)
@@ -53,5 +57,10 @@ public class Crosshair : MonoBehaviour {
     void SetColour(Color _newColour)
     {
         m_crosshair.color = _newColour;
+    }
+
+    GameObject GetTarget()
+    {
+        return m_targettedObject;
     }
 }
