@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour {
         }
         if (m_enemiesKilled == 10)
         {
+            Application.LoadLevel("main");
             //Win
         }
 	}
