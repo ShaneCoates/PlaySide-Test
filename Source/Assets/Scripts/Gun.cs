@@ -23,7 +23,8 @@ public class Gun : MonoBehaviour {
 
         if (m_cooldown <= 0)
         {
-            Shoot();
+            if (m_crosshair.m_targettedObject != null)
+                Invoke("Shoot", 0.2f);
         }
 	}
     void Shoot()
@@ -35,7 +36,6 @@ public class Gun : MonoBehaviour {
             m_crosshair.m_targettedObject.Hit();
             m_cooldown = m_maxCooldown;
             m_particles.Emit(15);
-
         }
     }
 }
