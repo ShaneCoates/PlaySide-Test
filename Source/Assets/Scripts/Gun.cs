@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
+using UnityEngine.UI;
 public class Gun : MonoBehaviour {
     public Crosshair m_crosshair;
     public ParticleSystem m_particles;
     public float m_maxCooldown;
     private float m_cooldown;
-
+    public Image m_cooldownImage;
 	// Use this for initialization
 	void Start () {
         m_cooldown = 0.0f;
@@ -14,6 +15,7 @@ public class Gun : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
     {
+        m_cooldownImage.fillAmount = m_cooldown / m_maxCooldown;
         if (m_cooldown > 0)
         {
             m_cooldown -= Time.deltaTime;
