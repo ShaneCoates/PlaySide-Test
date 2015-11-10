@@ -11,6 +11,12 @@ public class DoorTrigger : MonoBehaviour {
         {
             //Close the door
             m_targetDoor.Close();
+            //If we are the last door in the game, show game over panel
+            if (gameObject.CompareTag("FinalDoor"))
+            {
+                FindObjectOfType<GameManager>().ShowGameOverPanel();
+            }
+
         }
     }
 }

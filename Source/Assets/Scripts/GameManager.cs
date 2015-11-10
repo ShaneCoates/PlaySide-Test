@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 public class GameManager : MonoBehaviour {
     public int m_enemiesKilled;
     public Door[] m_doors;
     private int m_doorsOpened;
+    public CanvasGroup m_gameOverPanel;
 	// Use this for initialization
 	void Start () 
     {
@@ -27,4 +29,16 @@ public class GameManager : MonoBehaviour {
             }
         }
 	}
+    public void ShowGameOverPanel()
+    {
+        //Shows game over panel with text and reset button
+        m_gameOverPanel.alpha = 1;
+        m_gameOverPanel.interactable = true;
+        m_gameOverPanel.blocksRaycasts = true;
+    }
+    public void ResetGame()
+    {
+        //reloads game
+        Application.LoadLevel("main");
+    }
 }

@@ -2,7 +2,7 @@
 using UnityStandardAssets.CrossPlatformInput;
 public class Gun : MonoBehaviour {
     public Crosshair m_crosshair;
-
+    public ParticleSystem m_particles;
 	// Use this for initialization
 	void Start () {
 	
@@ -25,5 +25,6 @@ public class Gun : MonoBehaviour {
         {
             m_crosshair.m_targettedObject.Hit();
         }
+        m_particles.Emit(15);
     }
 }

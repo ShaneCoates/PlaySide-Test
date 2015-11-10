@@ -3,13 +3,19 @@ using UnityEngine.UI;
 
 public class Crosshair : MonoBehaviour {
     public Image m_crosshair;
+
     private Vector3 m_startPosition;
-    public Vector2 m_halfScreen;
-    public Enemy m_targettedObject { get; private set; }
+    private Vector2 m_halfScreen;
+    
     private Vector3 m_fullScale;
     private Vector3 m_halfScale;
+    
     private float m_timer = 0.0f;
     private float m_lastTimer;
+
+    //Current enemy in sights
+    public Enemy m_targettedObject { get; private set; }
+
 	// Use this for initialization
 	void Start () 
     {
@@ -57,7 +63,7 @@ public class Crosshair : MonoBehaviour {
         bool hitEnemy = false; //set to true if spherecast hits an enemy - otherwise resets crosshair position
         
         //Spherecase from center of camera to world space with radius of 2
-        if (Physics.SphereCast(Camera.main.ScreenPointToRay(m_halfScreen).origin, 2f, Camera.main.ScreenPointToRay(m_halfScreen).direction, out hit, 30f))
+        if (Physics.SphereCast(Camera.main.ScreenPointToRay(m_halfScreen).origin, 2f, Camera.main.ScreenPointToRay(m_halfScreen).direction, out hit, 30f, 1, QueryTriggerInteraction.Ignore))
         {
             //if SphereCast hits an enemy, move crosshair to hover over that particular enemy
             //moving with dual joystick controls on a mobile isn't easy to be entirely precise, so we help a little

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 public class Door : MonoBehaviour {
     public List<GameObject> m_doorPieces;
+    public float m_speed;
+    public float m_openDistance;
     private List<Vector3> m_closedPositions;
     private List<Vector3> m_openPositions;
     private bool m_opening;
@@ -20,8 +22,8 @@ public class Door : MonoBehaviour {
             m_closedPositions.Add(d.transform.position);
         }
         Vector3[] newPositions = { m_closedPositions[0], m_closedPositions[1] };
-        newPositions[0].x += 10;
-        newPositions[1].x -= 10;
+        newPositions[0].x += m_openDistance;
+        newPositions[1].x -= m_openDistance;
         m_openPositions.Add(newPositions[0]);
         m_openPositions.Add(newPositions[1]);
 	}
@@ -37,7 +39,7 @@ public class Door : MonoBehaviour {
             if(m_position >= 1.0f)
                 m_opening = false;
             else
-                m_position += Time.deltaTime * 5;
+                m_position += Time.deltaTime * m_speed;
         }
         else if(m_closing)
         {
@@ -45,7 +47,7 @@ public class Door : MonoBehaviour {
             if (m_position <= 0.0f)
                 m_closing = false;
             else
-                m_position -= Time.deltaTime * 5;
+                m_position -= Time.deltaTime * m_speed;
         }
         //If there has been a noticeable change in the position variable, move the door positions
         //If not, we don't do anything - this saves unnecessary function calls
