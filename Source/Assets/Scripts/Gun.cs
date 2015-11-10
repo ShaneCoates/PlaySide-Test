@@ -23,9 +23,7 @@ public class Gun : MonoBehaviour {
         //this is to make sure we are on target when the crosshair is moving around screen
         if (m_crosshair.m_targettedObject != null)
         {
-            m_crosshair.m_targettedObject.Explode();
-            //newBullet.Shoot(m_crosshair.m_targettedObject.transform);
+            m_crosshair.m_targettedObject.Hit();
         }
-        
     }
 }
