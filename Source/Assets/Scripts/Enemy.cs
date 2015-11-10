@@ -9,6 +9,10 @@ public class Enemy : MonoBehaviour {
     private bool m_dead = false;
     public Color[] m_possibleColors;
 
+    private float m_health = 1.0f;
+    public float m_damagePerHit;
+    public GameObject m_healthBar;
+
 	// Use this for initialization
 	void Awake () {
         //Make sure particles don't start playing straight away
@@ -48,6 +52,27 @@ public class Enemy : MonoBehaviour {
 	}
 
     public void Hit()
+    {
+        m_health -= m_damagePerHit;
+        if (m_health <= 0.0f)
+        {
+            Die();
+        }
+        
+        UpdateHealthBar();
+    }
+    void UpdateHealthBar()
+    {
+        Vector3 newScale = m_healthBar.transform.localScale;
+        newScale.x = m_health;
+        m_healthBar.transform.localScale = newScale;
+
+        Vector3 newPosition = m_healthBar.transform.position;
+        newPosition.x -= m_damagePerHit * 0.5f; 
+        m_healthBar.transform.position = newPosition;
+        
+    }
+    void Die()
     {
         //Emit smoke and cube particles
         m_mainParticles.Emit(100);

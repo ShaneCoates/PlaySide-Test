@@ -8,7 +8,6 @@ public class Crosshair : MonoBehaviour {
     
     //Current enemy in sights
     public Enemy m_targettedObject { get; private set; }
-
 	// Use this for initialization
 	void Start () 
     {
@@ -41,12 +40,14 @@ public class Crosshair : MonoBehaviour {
 
                 //Targetted Object saved for use when shooting
                 m_targettedObject = hit.rigidbody.gameObject.GetComponent<Enemy>();
+                m_crosshair.color = Color.red;
             }
         }
         if (!hitEnemy)
         {
             //If no enemy was hit, send crosshair back to center and release m_targettedObject
             m_targettedObject = null;
+            m_crosshair.color = Color.white;
         }
     }
 
