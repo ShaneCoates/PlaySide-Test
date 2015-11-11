@@ -46,27 +46,31 @@ public class Gun : MonoBehaviour {
     {
         for(int i = 0; i < m_clipSize; i++)
         {
+            //enable 1 image for each piece of ammo in the clip
             m_ammoImages[i].enabled = (i < m_remainingAmmo);
         }
     }
     void UpdateAmmo()
     {
+        //if we're out of ammo and not already reloading, start reloading!
         if (m_remainingAmmo <= 0 && !m_reloading)
         {
             m_reloading = true;
             m_cooldown = m_maxReloadTime;
-            m_reloadingText.enabled = true;
+            m_reloadingText.enabled = true; //show text so user knows what's happening
         }
+        //if we've finished reloading
         if (m_reloading && m_cooldown <= 0)
         {
             m_reloading = false;
             m_remainingAmmo = m_clipSize;
             m_reloadingText.enabled = false;
-            UpdateUI();
+            UpdateUI(); //update ammo ui to reflect newly filled clip
         }
     }
     void CheckForTarget()
     {
+        //if we're not already shooting, and there's no cooldown - check if there's something targetted
         if (m_cooldown <= 0 && !m_shooting)
         {
             if (m_crosshair.m_targettedObject != null)
@@ -79,13 +83,12 @@ public class Gun : MonoBehaviour {
     }
     void Shoot()
     {
-        //if there is a target, shoot towards it, otherwise shoot in a general forward direction
-        //this is to make sure we are on target when the crosshair is moving around screen
+        //make sure we have a target still, and that that target is the same as when we lined up the shot
         if (m_crosshair.m_targettedObject == m_lastTarget)
         {
             m_crosshair.m_targettedObject.Hit();
             m_cooldown = m_maxCooldown;
-            m_particles.Emit(15);
+            m_particles.Emit(15); //emit small smoke from gun area to signify shot
             m_lastTarget = null;
             
             m_remainingAmmo--;

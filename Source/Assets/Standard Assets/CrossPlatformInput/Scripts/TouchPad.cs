@@ -43,6 +43,7 @@ namespace UnityStandardAssets.CrossPlatformInput
 		int m_Id = -2;
 		Vector2 m_PreviousTouchPos; // swipe style control touch
 
+        //Shane added these images
         public Image m_ThumbBackground;
         public Image m_ThumbForeground;
 
@@ -57,6 +58,7 @@ namespace UnityStandardAssets.CrossPlatformInput
 		void OnEnable()
 		{
 			CreateVirtualAxes();
+            //Shane added this to hide the images until touch
             m_ThumbBackground.enabled = false;
             m_ThumbForeground.enabled = false;
 		}
@@ -90,7 +92,7 @@ namespace UnityStandardAssets.CrossPlatformInput
 
 		void UpdateVirtualAxes(Vector3 value)
 		{
-            //value = value.normalized;
+            //value = value.normalized; Shane removed this so we had analog input, not binary (on/off)
             if (m_UseX)
             {
                 m_HorizontalVirtualAxis.Update(value.x);
@@ -124,14 +126,21 @@ namespace UnityStandardAssets.CrossPlatformInput
 
 		void Update()
 		{
+            
+            if (!m_Dragging)
+            {
+                return;
+            }
+            //Shane added this "dropped" variable for a special case:
+            //If the user put touch[0] on the right side of the screen, then touch[1] on the left
+            //and then removed touch[0] from the right side - then the left touch became touch[0]
+            //as we update this based on touchID, we needed to make sure that it could handle this
+            //we set dropped to false at the start of Update() because if we then put a finger on the right side of the screen, touch[0] becomes touch[1] again
             bool dropped = false;
-			if (!m_Dragging)
-			{
-				return;
-			}
 
             if (Input.touchCount == m_Id && m_Id != -2)
             {
+                //Drop touch ID in case of other touch being released
                 m_Id -= 1;
                 dropped = true;
             }
@@ -141,16 +150,6 @@ namespace UnityStandardAssets.CrossPlatformInput
 
 #if !UNITY_EDITOR
 
-                //if (controlStyle == ControlStyle.Swipe)
-                //{
-                //    m_Center = m_PreviousTouchPos;
-                //    m_PreviousTouchPos = Input.touches[m_Id].position;
-                //}
-                //Vector2 pointerDelta = new Vector2(Input.touches[m_Id].position.x - m_Center.x , Input.touches[m_Id].position.y - m_Center.y).normalized;
-                //
-                //
-                //pointerDelta.x *= Xsensitivity;
-                //pointerDelta.y *= Ysensitivity;
                 if(controlStyle == ControlStyle.Swipe)
                 {
                     Vector2 pointerDelta;
@@ -174,7 +173,7 @@ namespace UnityStandardAssets.CrossPlatformInput
 
 #else
             }
-
+            //Shane completely rewrote this to suit the style he wanted
             if (controlStyle == ControlStyle.Swipe)
             {
                 Vector2 pointerDelta;
@@ -200,6 +199,7 @@ namespace UnityStandardAssets.CrossPlatformInput
                 
             if(dropped)
             {
+                //if we dropped, return in case old touch is replaced
                 m_Id += 1;
             }
             
