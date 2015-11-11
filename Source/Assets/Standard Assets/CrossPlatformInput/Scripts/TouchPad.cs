@@ -85,7 +85,7 @@ namespace UnityStandardAssets.CrossPlatformInput
 
 		void UpdateVirtualAxes(Vector3 value)
 		{
-            if(value.magnitude > 1) value = value.normalized;
+            //value = value.normalized;
             if (m_UseX)
             {
                 m_HorizontalVirtualAxis.Update(value.x);
@@ -123,29 +123,26 @@ namespace UnityStandardAssets.CrossPlatformInput
                 m_PreviousTouchPos = Input.touches[m_Id].position;
             }
             Vector2 pointerDelta = new Vector2(Input.touches[m_Id].position.x - m_Center.x , Input.touches[m_Id].position.y - m_Center.y).normalized;
-            pointerDelta.x *= Xsensitivity;
-            pointerDelta.y *= Ysensitivity;
-#else
-				Vector2 pointerDelta;
-				pointerDelta.x = Input.mousePosition.x - m_PreviousMouse.x;
-				pointerDelta.y = Input.mousePosition.y - m_PreviousMouse.y;
-				m_PreviousMouse = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0f);
-#endif
-
-                var absoluteX = Mathf.Abs(pointerDelta.x);
+                                var absoluteX = Mathf.Abs(pointerDelta.x);
                 var absoluteY = Mathf.Abs(pointerDelta.y);
-
-                if (absoluteX < 0.5f)
+                if (absoluteX < 0.25f)
                 {
                     // Report the joystick as being at the center if it is within the dead zone
                     pointerDelta.x = 0;
                 }
-                if (absoluteY < 0.5f)
+                if (absoluteY < 0.25f)
                 {
                     // Report the joystick as being at the center if it is within the dead zone
                     pointerDelta.y = 0;
                 }
-
+            pointerDelta.x *= Xsensitivity;
+            pointerDelta.y *= Ysensitivity;
+#else
+                Vector2 pointerDelta;
+				pointerDelta.x = Input.mousePosition.x - m_PreviousMouse.x;
+				pointerDelta.y = Input.mousePosition.y - m_PreviousMouse.y;
+				m_PreviousMouse = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0f);
+#endif
 
                 UpdateVirtualAxes(new Vector3(pointerDelta.x, pointerDelta.y, 0));
 				
