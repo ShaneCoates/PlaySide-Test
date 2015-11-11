@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour {
     public Text m_timerText;
     private float m_fastestTime;
     public Text m_fastestTimeText;
+
+    float deltaTime = 0.0f;
 	// Use this for initialization
 	void Start () 
     {
@@ -47,6 +49,8 @@ public class GameManager : MonoBehaviour {
                     m_doorsOpened++;
                 }
             }
+            deltaTime += (Time.deltaTime - deltaTime) * 0.1f;
+
             m_timer += Time.deltaTime;
             m_timerText.text = m_timer.ToString("F2");
         }
@@ -69,5 +73,20 @@ public class GameManager : MonoBehaviour {
     {
         //reloads game
         Application.LoadLevel("main");
+    }
+    void OnGUI()
+    {
+        int w = Screen.width, h = Screen.height;
+
+        GUIStyle style = new GUIStyle();
+
+        Rect rect = new Rect(0, 0, w, h);
+        style.alignment = TextAnchor.LowerLeft;
+        style.fontSize = h * 2 / 100;
+        style.normal.textColor = Color.white;
+        float msec = deltaTime * 1000.0f;
+        float fps = 1.0f / deltaTime;
+        string text = string.Format("{0:0.0} ms ({1:0.} fps)", msec, fps);
+        GUI.Label(rect, text, style);
     }
 }

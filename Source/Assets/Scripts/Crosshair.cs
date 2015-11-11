@@ -29,7 +29,7 @@ public class Crosshair : MonoBehaviour {
         bool hitEnemy = false; //set to true if spherecast hits an enemy - otherwise resets crosshair position
         
         //Spherecase from center of camera to world space with radius of 2
-        if (Physics.Raycast(Camera.main.ScreenPointToRay(m_halfScreen).origin, Camera.main.ScreenPointToRay(m_halfScreen).direction, out hit, 30f, 1, QueryTriggerInteraction.Ignore))
+        if (Physics.Raycast(Camera.main.ScreenPointToRay(m_halfScreen).origin, Camera.main.ScreenPointToRay(m_halfScreen).direction, out hit, 50f, 1, QueryTriggerInteraction.Ignore))
         {
             //if SphereCast hits an enemy, move crosshair to hover over that particular enemy
             //moving with dual joystick controls on a mobile isn't easy to be entirely precise, so we help a little

@@ -8,6 +8,7 @@ public class Gun : MonoBehaviour {
     private float m_cooldown;
     public Image m_cooldownImage;
     private bool m_shooting;
+    private Enemy m_lastTarget;
 	// Use this for initialization
 	void Start () {
         m_cooldown = 0.0f;
@@ -28,7 +29,8 @@ public class Gun : MonoBehaviour {
             
             if (m_crosshair.m_targettedObject != null)
             {
-                Invoke("Shoot", 0.2f);
+                m_lastTarget = m_crosshair.m_targettedObject;
+                Invoke("Shoot", 0.1f);
                 m_shooting = true;
             }
                 
@@ -38,11 +40,12 @@ public class Gun : MonoBehaviour {
     {
         //if there is a target, shoot towards it, otherwise shoot in a general forward direction
         //this is to make sure we are on target when the crosshair is moving around screen
-        if (m_crosshair.m_targettedObject != null)
+        if (m_crosshair.m_targettedObject == m_lastTarget)
         {
             m_crosshair.m_targettedObject.Hit();
             m_cooldown = m_maxCooldown;
             m_particles.Emit(15);
+            m_lastTarget = null;
         }
         m_shooting = false;
     }

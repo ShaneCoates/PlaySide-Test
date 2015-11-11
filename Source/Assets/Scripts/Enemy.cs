@@ -80,6 +80,7 @@ public class Enemy : MonoBehaviour {
         //Turn off mesh rendered so it's invisible, and collider so the particles don't collide with it
         GetComponentInChildren<MeshRenderer>().enabled = false;
         GetComponentInChildren<CapsuleCollider>().enabled = false;
+        m_healthBar.GetComponentInChildren<MeshRenderer>().enabled = false;
         //Tell GameManager we died
         FindObjectOfType<GameManager>().m_enemiesKilled++;
         m_dead = true;

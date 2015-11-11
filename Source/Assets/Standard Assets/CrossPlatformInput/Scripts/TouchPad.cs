@@ -162,7 +162,6 @@ namespace UnityStandardAssets.CrossPlatformInput
                 }
                 else
                 {
-                    m_ThumbForeground.rectTransform.position = Input.touches[m_Id].position;
                     Vector2 pointerDelta;
                     pointerDelta.x = Input.touches[m_Id].position.x - m_ThumbBackground.rectTransform.position.x;
                     pointerDelta.y = Input.touches[m_Id].position.y - m_ThumbBackground.rectTransform.position.y;
