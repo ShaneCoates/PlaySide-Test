@@ -30,19 +30,20 @@ namespace UnityStandardAssets.Characters.FirstPerson
 				if (input.x > 0 || input.x < 0)
 				{
 					//strafe
-					CurrentTargetSpeed = StrafeSpeed;
+                    CurrentTargetSpeed = StrafeSpeed;
 				}
 				if (input.y < 0)
 				{
 					//backwards
-					CurrentTargetSpeed = BackwardSpeed;
+                    CurrentTargetSpeed = BackwardSpeed;
 				}
 				if (input.y > 0)
 				{
 					//forwards
 					//handled last as if strafing and moving forward at the same time forwards speed should take precedence
-					CurrentTargetSpeed = ForwardSpeed;
+                    CurrentTargetSpeed = ForwardSpeed;
 				}
+                 CurrentTargetSpeed *= (input.magnitude * 0.01f);
 #if !MOBILE_INPUT
 	            if (Input.GetKey(RunKey))
 	            {

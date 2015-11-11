@@ -40,8 +40,11 @@ namespace UnityStandardAssets.CrossPlatformInput
 		CrossPlatformInputManager.VirtualAxis m_HorizontalVirtualAxis; // Reference to the joystick in the cross platform input
 		CrossPlatformInputManager.VirtualAxis m_VerticalVirtualAxis; // Reference to the joystick in the cross platform input
 		bool m_Dragging;
-		int m_Id = -1;
+		int m_Id = -2;
 		Vector2 m_PreviousTouchPos; // swipe style control touch
+
+        public Image m_ThumbBackground;
+        public Image m_ThumbForeground;
 
 
 #if !UNITY_EDITOR
@@ -54,6 +57,8 @@ namespace UnityStandardAssets.CrossPlatformInput
 		void OnEnable()
 		{
 			CreateVirtualAxes();
+            m_ThumbBackground.enabled = false;
+            m_ThumbForeground.enabled = false;
 		}
 
         void Start()
@@ -99,6 +104,16 @@ namespace UnityStandardAssets.CrossPlatformInput
 
 		public void OnPointerDown(PointerEventData data)
 		{
+            if(controlStyle != ControlStyle.Swipe)
+            {
+                m_ThumbBackground.enabled = true;
+                m_ThumbForeground.enabled = true;
+                m_ThumbBackground.rectTransform.position = data.position;
+            }
+            else
+            {
+                m_PreviousTouchPos = data.position;
+            }
 			m_Dragging = true;
 			m_Id = data.pointerId;
 #if !UNITY_EDITOR
@@ -109,44 +124,86 @@ namespace UnityStandardAssets.CrossPlatformInput
 
 		void Update()
 		{
+            bool dropped = false;
 			if (!m_Dragging)
 			{
 				return;
 			}
-			if (Input.touchCount >= m_Id + 1 && m_Id != -1)
-			{
+
+            if (Input.touchCount == m_Id && m_Id != -2)
+            {
+                m_Id -= 1;
+                dropped = true;
+            }
+
+            if (Input.touchCount >= m_Id + 1 && m_Id != -2)
+            {
+
 #if !UNITY_EDITOR
+
+                //if (controlStyle == ControlStyle.Swipe)
+                //{
+                //    m_Center = m_PreviousTouchPos;
+                //    m_PreviousTouchPos = Input.touches[m_Id].position;
+                //}
+                //Vector2 pointerDelta = new Vector2(Input.touches[m_Id].position.x - m_Center.x , Input.touches[m_Id].position.y - m_Center.y).normalized;
+                //
+                //
+                //pointerDelta.x *= Xsensitivity;
+                //pointerDelta.y *= Ysensitivity;
+                if(controlStyle == ControlStyle.Swipe)
+                {
+                    Vector2 pointerDelta;
+                    pointerDelta.x = Input.touches[m_Id].position.x - m_PreviousTouchPos.x;
+                    pointerDelta.y = Input.touches[m_Id].position.y - m_PreviousTouchPos.y;
+                    pointerDelta = Vector2.ClampMagnitude(pointerDelta, 100);
+                    m_PreviousTouchPos = Input.touches[m_Id].position;
+                    UpdateVirtualAxes(new Vector3(pointerDelta.x, pointerDelta.y, 0));
+                }
+                else
+                {
+                    m_ThumbForeground.rectTransform.position = Input.touches[m_Id].position;
+                    Vector2 pointerDelta;
+                    pointerDelta.x = Input.touches[m_Id].position.x - m_ThumbBackground.rectTransform.position.x;
+                    pointerDelta.y = Input.touches[m_Id].position.y - m_ThumbBackground.rectTransform.position.y;
+                    pointerDelta = Vector2.ClampMagnitude(pointerDelta, 100);
+
+                    m_ThumbForeground.rectTransform.localPosition = pointerDelta;
+                    UpdateVirtualAxes(new Vector3(pointerDelta.x, pointerDelta.y, 0));
+                }
+			}
+
+#else
+            }
 
             if (controlStyle == ControlStyle.Swipe)
             {
-                m_Center = m_PreviousTouchPos;
-                m_PreviousTouchPos = Input.touches[m_Id].position;
-            }
-            Vector2 pointerDelta = new Vector2(Input.touches[m_Id].position.x - m_Center.x , Input.touches[m_Id].position.y - m_Center.y).normalized;
-                                var absoluteX = Mathf.Abs(pointerDelta.x);
-                var absoluteY = Mathf.Abs(pointerDelta.y);
-                if (absoluteX < 0.25f)
-                {
-                    // Report the joystick as being at the center if it is within the dead zone
-                    pointerDelta.x = 0;
-                }
-                if (absoluteY < 0.25f)
-                {
-                    // Report the joystick as being at the center if it is within the dead zone
-                    pointerDelta.y = 0;
-                }
-            pointerDelta.x *= Xsensitivity;
-            pointerDelta.y *= Ysensitivity;
-#else
                 Vector2 pointerDelta;
-				pointerDelta.x = Input.mousePosition.x - m_PreviousMouse.x;
-				pointerDelta.y = Input.mousePosition.y - m_PreviousMouse.y;
-				m_PreviousMouse = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0f);
-#endif
-
+                pointerDelta.x = Input.mousePosition.x - m_PreviousTouchPos.x;
+                pointerDelta.y = Input.mousePosition.y - m_PreviousTouchPos.y;
+                pointerDelta = Vector2.ClampMagnitude(pointerDelta, 100);
+                m_PreviousTouchPos = Input.mousePosition;
                 UpdateVirtualAxes(new Vector3(pointerDelta.x, pointerDelta.y, 0));
-				
-			}
+            }
+            else
+            {
+                Vector2 pointerDelta;
+                pointerDelta.x = Input.mousePosition.x - m_ThumbBackground.rectTransform.position.x;
+                pointerDelta.y = Input.mousePosition.y - m_ThumbBackground.rectTransform.position.y;
+                if (Mathf.Abs(pointerDelta.x) < 10) pointerDelta.x = 0;
+                if (Mathf.Abs(pointerDelta.y) < 10) pointerDelta.y = 0;
+
+                pointerDelta = Vector2.ClampMagnitude(pointerDelta, 100);
+                m_ThumbForeground.rectTransform.localPosition = pointerDelta;
+                UpdateVirtualAxes(new Vector3(pointerDelta.x, pointerDelta.y, 0));
+            }
+#endif
+                
+            if(dropped)
+            {
+                m_Id += 1;
+            }
+            
 
 		}
 
@@ -154,8 +211,10 @@ namespace UnityStandardAssets.CrossPlatformInput
 		public void OnPointerUp(PointerEventData data)
 		{
 			m_Dragging = false;
-			m_Id = -1;
+			m_Id = -2;
 			UpdateVirtualAxes(Vector3.zero);
+            m_ThumbBackground.enabled = false;
+            m_ThumbForeground.enabled = false;
 		}
 
 		void OnDisable()
