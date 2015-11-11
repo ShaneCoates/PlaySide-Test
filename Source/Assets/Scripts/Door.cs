@@ -10,12 +10,15 @@ public class Door : MonoBehaviour {
     private bool m_closing;
     private float m_position;
     private float m_lastPosition;
+    private AudioSource m_source;
 	// Use this for initialization
 	void Awake () 
     {
         //Initialise lists for Door positions
         m_closedPositions = new List<Vector3>();
         m_openPositions = new List<Vector3>();
+
+        m_source = GetComponent<AudioSource>();
 
 	    foreach(GameObject d in m_doorPieces)
         {
@@ -62,6 +65,7 @@ public class Door : MonoBehaviour {
 
     public void Open()
     {
+        m_source.PlayOneShot(m_source.clip);
         m_opening = true;
         m_closing = false;
     }

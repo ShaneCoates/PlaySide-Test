@@ -22,6 +22,7 @@ public class Gun : MonoBehaviour {
     private bool m_shooting;
     private Enemy m_lastTarget;
 
+    private AudioSource m_source;
 	// Use this for initialization
 	void Start () {
         m_cooldown = 0.0f;
@@ -29,6 +30,8 @@ public class Gun : MonoBehaviour {
         m_reloadingText.enabled = false;
 
         m_remainingAmmo = m_clipSize;
+        m_source = GetComponent<AudioSource>();
+
         UpdateUI();
 	}
 	
@@ -86,6 +89,7 @@ public class Gun : MonoBehaviour {
         //make sure we have a target still, and that that target is the same as when we lined up the shot
         if (m_crosshair.m_targettedObject == m_lastTarget)
         {
+            m_source.PlayOneShot(m_source.clip);
             m_crosshair.m_targettedObject.Hit();
             m_cooldown = m_maxCooldown;
             m_particles.Emit(15); //emit small smoke from gun area to signify shot

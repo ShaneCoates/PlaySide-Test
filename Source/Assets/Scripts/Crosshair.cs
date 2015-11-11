@@ -5,12 +5,17 @@ public class Crosshair : MonoBehaviour {
     public Image m_crosshair;
 
     private Vector2 m_halfScreen;
+
+    private AudioSource m_source;
+
     
     //Current enemy in sights
     public Enemy m_targettedObject { get; private set; }
 	// Use this for initialization
 	void Start () 
     {
+        m_source = GetComponent<AudioSource>();
+
         //Initialise all variables
         m_halfScreen = new Vector2(Screen.width / 2, Screen.height / 2); //Point in center of screen
 
@@ -27,7 +32,7 @@ public class Crosshair : MonoBehaviour {
     {
         RaycastHit hit;
         bool hitEnemy = false; //set to true if spherecast hits an enemy - otherwise resets crosshair position
-        
+        Enemy lastEnemy = m_targettedObject;
         //Spherecase from center of camera to world space with radius of 2
         if (Physics.Raycast(Camera.main.ScreenPointToRay(m_halfScreen).origin, Camera.main.ScreenPointToRay(m_halfScreen).direction, out hit, 50f, 1, QueryTriggerInteraction.Ignore))
         {
@@ -41,6 +46,7 @@ public class Crosshair : MonoBehaviour {
                 //Targetted Object saved for use when shooting
                 m_targettedObject = hit.rigidbody.gameObject.GetComponent<Enemy>();
                 m_crosshair.color = Color.red;
+
             }
         }
         if (!hitEnemy)
@@ -48,6 +54,14 @@ public class Crosshair : MonoBehaviour {
             //If no enemy was hit, send crosshair back to center and release m_targettedObject
             m_targettedObject = null;
             m_crosshair.color = Color.white;
+        }
+        else
+        {
+            if(lastEnemy != m_targettedObject)
+            {
+                m_source.PlayOneShot(m_source.clip);
+
+            }
         }
     }
 

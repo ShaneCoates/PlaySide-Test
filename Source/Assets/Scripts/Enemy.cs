@@ -13,6 +13,12 @@ public class Enemy : MonoBehaviour {
     public float m_damagePerHit;
     public GameObject m_healthBar;
 
+    private Renderer m_renderer;
+    private Color m_colour;
+    private float m_hitTimer;
+
+    private AudioSource m_source;
+
 	// Use this for initialization
 	void Awake () {
         //Make sure particles don't start playing straight away
@@ -20,9 +26,10 @@ public class Enemy : MonoBehaviour {
         m_mainParticles.Stop();
 
         //Pick random colour from a list of selected ones that I liked
-        Color enemyColor = m_possibleColors[Random.Range(0, m_possibleColors.Length)];
-        GetComponent<Renderer>().material.color = enemyColor;
-        m_mainParticles.GetComponent<Renderer>().material.color = enemyColor;
+        m_colour = m_possibleColors[Random.Range(0, m_possibleColors.Length)];
+        m_renderer = GetComponent<Renderer>();
+        m_renderer.material.color = m_colour;
+        m_mainParticles.GetComponent<Renderer>().material.color = m_colour;
 
         //Setup stuff for moving enemies
         if(m_level == 2)
@@ -30,12 +37,17 @@ public class Enemy : MonoBehaviour {
             m_position = transform.position;
             m_timer = m_position.x;
         }
-        
+        m_source = GetComponent<AudioSource>();
 	}
 	
 	// Update is called once per frame
 	void Update () 
     {
+        if(m_hitTimer >= 0)
+        {
+            m_hitTimer -= Time.deltaTime * 5;
+            m_renderer.material.color = Color.Lerp(m_colour, Color.red, m_hitTimer);
+        }
         if(m_level == 2)
         {
             m_timer += Time.deltaTime;
@@ -54,6 +66,7 @@ public class Enemy : MonoBehaviour {
     public void Hit()
     {
         m_health -= m_damagePerHit;
+        m_hitTimer = 1.0f;
         if (m_health <= 0.0f)
         {
             Die();
@@ -74,6 +87,7 @@ public class Enemy : MonoBehaviour {
     }
     void Die()
     {
+        m_source.PlayOneShot(m_source.clip);
         //Emit smoke and cube particles
         m_mainParticles.Emit(100);
         m_smokeParticles.Emit(200);
