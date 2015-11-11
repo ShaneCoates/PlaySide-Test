@@ -85,16 +85,15 @@ namespace UnityStandardAssets.CrossPlatformInput
 
 		void UpdateVirtualAxes(Vector3 value)
 		{
-			value = value.normalized;
-			if (m_UseX)
-			{
-				m_HorizontalVirtualAxis.Update(value.x);
-			}
-
-			if (m_UseY)
-			{
-				m_VerticalVirtualAxis.Update(value.y);
-			}
+            if(value.magnitude > 1) value = value.normalized;
+            if (m_UseX)
+            {
+                m_HorizontalVirtualAxis.Update(value.x);
+            }
+            if (m_UseY)
+            {
+               m_VerticalVirtualAxis.Update(value.y);
+            }
 		}
 
 
@@ -132,7 +131,24 @@ namespace UnityStandardAssets.CrossPlatformInput
 				pointerDelta.y = Input.mousePosition.y - m_PreviousMouse.y;
 				m_PreviousMouse = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0f);
 #endif
-				UpdateVirtualAxes(new Vector3(pointerDelta.x, pointerDelta.y, 0));
+
+                var absoluteX = Mathf.Abs(pointerDelta.x);
+                var absoluteY = Mathf.Abs(pointerDelta.y);
+
+                if (absoluteX < 0.5f)
+                {
+                    // Report the joystick as being at the center if it is within the dead zone
+                    pointerDelta.x = 0;
+                }
+                if (absoluteY < 0.5f)
+                {
+                    // Report the joystick as being at the center if it is within the dead zone
+                    pointerDelta.y = 0;
+                }
+
+
+                UpdateVirtualAxes(new Vector3(pointerDelta.x, pointerDelta.y, 0));
+				
 			}
 
 		}
