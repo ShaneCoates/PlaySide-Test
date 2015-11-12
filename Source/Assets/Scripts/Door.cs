@@ -71,6 +71,8 @@ public class Door : MonoBehaviour {
     }
     public void Close()
     {
+        m_source.PlayOneShot(m_source.clip);
+
         m_closing = true;
         m_opening = false;
     }

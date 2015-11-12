@@ -52,6 +52,7 @@ public class Gun : MonoBehaviour {
         //make sure we have a target still, and that that target is the same as when we lined up the shot
         if (m_crosshair.m_targettedObject == m_lastTarget)
         {
+            m_source.Stop();
             m_source.PlayOneShot(m_source.clip);
             m_crosshair.m_targettedObject.Hit();
             m_cooldown = m_maxCooldown;
