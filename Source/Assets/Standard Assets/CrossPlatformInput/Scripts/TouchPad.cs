@@ -147,33 +147,35 @@ namespace UnityStandardAssets.CrossPlatformInput
 
             if (Input.touchCount >= m_Id + 1 && m_Id != -2)
             {
+                //Shane completely rewrote this to suit the style he wanted
 
 #if !UNITY_EDITOR
 
                 if(controlStyle == ControlStyle.Swipe)
                 {
                     Vector2 pointerDelta;
-                    pointerDelta.x = Input.touches[m_Id].position.x - m_PreviousTouchPos.x;
-                    pointerDelta.y = Input.touches[m_Id].position.y - m_PreviousTouchPos.y;
-                    pointerDelta = Vector2.ClampMagnitude(pointerDelta, 100);
-                    m_PreviousTouchPos = Input.touches[m_Id].position;
-                    UpdateVirtualAxes(new Vector3(pointerDelta.x, pointerDelta.y, 0));
+                    pointerDelta.x = Input.touches[m_Id].position.x - m_PreviousTouchPos.x; //Get distance pointer has moved since last frame
+                    pointerDelta.y = Input.touches[m_Id].position.y - m_PreviousTouchPos.y; //Get distance pointer has moved since last frame
+                    pointerDelta = Vector2.ClampMagnitude(pointerDelta, 100);               //Clamp distance to within a circle of 100 radius
+                    m_PreviousTouchPos = Input.touches[m_Id].position;                      //Set previous touch pos for reference next frame
+                    UpdateVirtualAxes(new Vector3(pointerDelta.x, pointerDelta.y, 0));      //update axis
                 }
                 else
                 {
                     Vector2 pointerDelta;
-                    pointerDelta.x = Input.touches[m_Id].position.x - m_ThumbBackground.rectTransform.position.x;
-                    pointerDelta.y = Input.touches[m_Id].position.y - m_ThumbBackground.rectTransform.position.y;
-                    pointerDelta = Vector2.ClampMagnitude(pointerDelta, 100);
+                    pointerDelta.x = Input.touches[m_Id].position.x - m_ThumbBackground.rectTransform.position.x; //Get distance pointer has moved from start position
+                    pointerDelta.y = Input.touches[m_Id].position.y - m_ThumbBackground.rectTransform.position.y; //Get distance pointer has moved from start position
+                    pointerDelta = Vector2.ClampMagnitude(pointerDelta, 100);                                     //Clamp to circle of 100 radius
 
-                    m_ThumbForeground.rectTransform.localPosition = pointerDelta;
-                    UpdateVirtualAxes(new Vector3(pointerDelta.x, pointerDelta.y, 0));
+                    m_ThumbForeground.rectTransform.localPosition = pointerDelta;                                 // Move little circle to local position relative to thumb position
+                    UpdateVirtualAxes(new Vector3(pointerDelta.x, pointerDelta.y, 0));                            //Update Axis
                 }
 			}
 
 #else
             }
-            //Shane completely rewrote this to suit the style he wanted
+            //Pretty much the same as above, except using mouse input instead of touch
+            //(Unity's version didn't actually handle mouse input correctly)
             if (controlStyle == ControlStyle.Swipe)
             {
                 Vector2 pointerDelta;
@@ -183,8 +185,8 @@ namespace UnityStandardAssets.CrossPlatformInput
                 m_PreviousTouchPos = Input.mousePosition;
                 UpdateVirtualAxes(
                     new Vector3(
-                        pointerDelta.x,// * (Mathf.Abs(pointerDelta.x * 0.25f)), 
-                        pointerDelta.y,// * (Mathf.Abs(pointerDelta.y * 0.25f)), 
+                        pointerDelta.x,
+                        pointerDelta.y,
                         0)
                     );
             }
