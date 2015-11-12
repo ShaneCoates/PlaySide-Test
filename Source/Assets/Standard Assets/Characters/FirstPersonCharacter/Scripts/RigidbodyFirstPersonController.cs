@@ -107,7 +107,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 if (m_RigidBody.velocity.sqrMagnitude <
                     (movementSettings.CurrentTargetSpeed*movementSettings.CurrentTargetSpeed))
                 {
-                    m_RigidBody.AddForce(desiredMove, ForceMode.Impulse);
+                    m_RigidBody.AddForce(desiredMove, ForceMode.VelocityChange);
                 }
             }
 
