@@ -183,8 +183,8 @@ namespace UnityStandardAssets.CrossPlatformInput
                 m_PreviousTouchPos = Input.mousePosition;
                 UpdateVirtualAxes(
                     new Vector3(
-                        pointerDelta.x * (Mathf.Abs(pointerDelta.x * 0.25f)), 
-                        pointerDelta.y * (Mathf.Abs(pointerDelta.y * 0.25f)), 
+                        pointerDelta.x,// * (Mathf.Abs(pointerDelta.x * 0.25f)), 
+                        pointerDelta.y,// * (Mathf.Abs(pointerDelta.y * 0.25f)), 
                         0)
                     );
             }
